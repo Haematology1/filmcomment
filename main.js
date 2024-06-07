@@ -1,41 +1,158 @@
+document.getElementById('uploadButton').addEventListener('click', uploadFiles);
+document.getElementById('downloadButton').addEventListener('click', downloadFile);
+document.getElementById('deleteButton').addEventListener('click', deleteFile);
+document.getElementById('viewFilesButton').addEventListener('click', viewFiles);
 
 function uploadFiles() {
-    const fileInput = document.getElementById("fileInput");
-    const selectedFiles = fileInput.files;
-    if (selectedFiles.length === 0) {
+  const fileInput = document.getElementById("fileInput");
+  const selectedFiles = fileInput.files;
+  if (selectedFiles.length === 0) {
     alert("Please select at least one file to upload.");
     return;
   }
-    uploading(selectedFiles);
+  uploading(selectedFiles);
+}
+
+async function uploading(selectedFiles) {
+  for (let file of selectedFiles) {
+    const content = await readFileAsBase64(file);
+    const fileName = file.name;
+    const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
+    uploadToGitHub(filePath, content, fileName);
   }
+}
 
-  function uploading(selectedFiles) {
-    const formData = new FormData();
-    for (let i = 0; i < selectedFiles.length; i++) {
-        formData.append("files[]", selectedFiles[i]);
-      }
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://api.github.com/repos/:owner/:repo/contents/:path', true);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + your_personal_access_token);    
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-             // Handle successful response from the server
-            console.log('Files uploaded successfully!');
-            alert("Files uploaded successfully!");
-          } else {
-             // Handle error response from the server
-            console.error('Failed to upload files.');
-           alert("Error occurred during file upload. Please try again.");
-          }
+function uploadToGitHub(filePath, content, fileName) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('PUT', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
+  xhr.setRequestHeader('Authorization', 'Bearer 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');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+
+  const data = JSON.stringify({
+    message: `Upload ${filePath}`,
+    content: content,
+    branch: 'main'
+  });
+
+  xhr.onload = function() {
+    if (xhr.status === 201 || xhr.status === 200) {
+      alert(`File ${filePath} uploaded successfully!`);
+    } else {
+      alert(`Error uploading ${filePath}: ${xhr.responseText}`);
+    }
+  };
+
+  xhr.send(data);
+}
+
+function downloadFile() {
+  const fileName = document.getElementById("fileName").value;
+  if (!fileName) {
+    alert("Please enter a file name to download.");
+    return;
+  }
+  const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
+  downloadFromGitHub(filePath, fileName);
+}
+
+function downloadFromGitHub(filePath, fileName) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `https://raw.githubusercontent.com/Haematology1/filmcomment/main/${filePath}`, true);
+  xhr.responseType = 'blob';
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      const url = window.URL.createObjectURL(xhr.response);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } else {
+      alert(`Error downloading ${filePath}: ${xhr.responseText}`);
+    }
+  };
+
+  xhr.send();
+}
+
+function deleteFile() {
+  const fileName = document.getElementById("fileName").value;
+  if (!fileName) {
+    alert("Please enter a file name to delete.");
+    return;
+  }
+  const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
+  deleteFromGitHub(filePath);
+}
+
+function deleteFromGitHub(filePath) {
+  // First, get the SHA of the file to be deleted
+  const getShaXhr = new XMLHttpRequest();
+  getShaXhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
+  getShaXhr.setRequestHeader('Authorization', 'Bearer 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');
+
+  getShaXhr.onload = function() {
+    if (getShaXhr.status === 200) {
+      const response = JSON.parse(getShaXhr.responseText);
+      const sha = response.sha;
+
+      const deleteXhr = new XMLHttpRequest();
+      deleteXhr.open('DELETE', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
+      deleteXhr.setRequestHeader('Authorization', 'Bearer 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');
+      deleteXhr.setRequestHeader('Content-Type', 'application/json');
+
+      const data = JSON.stringify({
+        message: `Delete ${filePath}`,
+        sha: sha,
+        branch: 'main'
+      });
+
+      deleteXhr.onload = function() {
+        if (deleteXhr.status === 200) {
+          alert(`File ${filePath} deleted successfully!`);
+        } else {
+          alert(`Error deleting ${filePath}: ${deleteXhr.responseText}`);
         }
       };
-      xhr.send(formData);
-      
-  }
 
+      deleteXhr.send(data);
+    } else {
+      alert(`Error getting SHA for ${filePath}: ${getShaXhr.responseText}`);
+    }
+  };
 
+  getShaXhr.send();
+}
 
+function viewFiles() {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/uploadFiles`, true);
+  xhr.setRequestHeader('Authorization', 'Bearer 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');
 
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      const fileList = document.getElementById("fileList");
+      fileList.value = "";
+      response.forEach(file => {
+        fileList.value += file.name + '\n' + '--------------------------------------------------------------------------------------------------------------------------------------------\n' ;
+      });
+    } else {
+      alert(`Error viewing files: ${xhr.responseText}`);
+    }
+  };
 
+  xhr.send();
+}
