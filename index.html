@@ -3,44 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
+  <title>Haematology FTS</title>
   <link href='/style.css' rel='stylesheet'>
   <script src="/main.js"></script>
-</head>
+</head> 
 <body>
   <nav>
     <div class="container">
       <ul>
         <li><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>
       </ul>
     </div>
   </nav>
 
   <div class="hero">
     <div class="container">
-      <h1>Welcome to Our Website</h1>
-      <p>Your success is our priority</p>
+      <h1>Department of Haematology</h1>
+      <p>To become a world class centre of excellence in research, training and management of haematological disorders in West Africa.</p>
     </div>
   </div>
-
   <div class="content container">
-    <h2>About Us</h2>
+    <h2>File Transfer System (FTS)</h2>
     <form id="uploadForm" enctype="multipart/form-data">
-      <input type="file" id="fileInput" name="files[]" multiple accept="image/*,video/*"/>
-      <button type="button" onclick="uploadFiles()" id="uploadButton">Upload Files</button>
+      <input type="file" id="fileInput" name="files[]" multiple/>
+      <button type="button" id="uploadButton">Upload Files</button>
       <br>
       <br>
-      <input type="text" readonly />
+      <input type="text" id="fileName" placeholder="Enter file name" />
+      <button type="button" id="downloadButton">Download File</button>
+      <button type="button" id="deleteButton">Delete File</button>
+      <button type="button" id="viewFilesButton">View Files in Repository</button>
+      <br>
+      <br>
+      <textarea id="fileList" rows="10" cols="50" readonly></textarea>
     </form>
   </div>
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 Your Company. All rights reserved.</p>
+      <p>&copy; 2024 Haematology. All rights reserved.</p>
     </div>
   </footer>
+
+  <script src="main.js"></script>
 </body>
 </html>
