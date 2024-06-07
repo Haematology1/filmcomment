@@ -34,7 +34,7 @@ function readFileAsBase64(file) {
 function uploadToGitHub(filePath, content, fileName) {
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
-  xhr.setRequestHeader('Authorization', 'Bearer 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');
+  xhr.setRequestHeader('Authorization', 'Bearer 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');
   xhr.setRequestHeader('Content-Type', 'application/json');
 
   const data = JSON.stringify({
