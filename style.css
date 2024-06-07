@@ -7,9 +7,9 @@ body {
   }
 
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 0 20px;
+    
+    
   }
 
   nav {
@@ -42,7 +42,7 @@ body {
   }
 
   .hero {
-    background-image: url('https://via.placeholder.com/1200x400');
+    background-image: url('/webfiles/Haem_logo.jpg');
     background-size: cover;
     background-position: center;
     color: #fff;
@@ -50,27 +50,39 @@ body {
     padding: 100px 0;
   }
 
+  .hero > div {
+    backdrop-filter: blur(4px);
+  }
+
   .hero h1 {
     font-size: 3em;
     margin: 0;
+    color: black;
   }
 
   .hero p {
     font-size: 1.2em;
+    color: black;
   }
 
   .content {
     padding: 50px 0;
+    background-color: darkslategrey;
+    
   }
 
   .content h2 {
     text-align: center;
     margin-bottom: 20px;
+    padding-top: 0rem;
+    margin-top: 0rem;
   }
 
   .content p {
     line-height: 1.6;
+    
   }
+
 
   .content .card {
     background-color: #fff;
@@ -95,4 +107,43 @@ body {
     .hero h1 {
       font-size: 2.5em;
     }
+  }
+
+  #uploadForm {
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+
+  #uploadForm > textarea {
+    width: 100%;
+  }
+
+ 
+
+  #uploadForm > button:hover {
+    background-color:rgb(97, 95, 62);
+    border-color:  rgb(150, 146, 87);
+  }
+
+  #uploadForm > input[type=text] {
+    background-color: aquamarine;
+  }
+  #uploadForm > input[type=text]:focus {
+    background-color: whitesmoke;
+  }
+
+  #uploadForm > textarea {
+    border-style: groove;
+    border-width: 0.2rem;
+    background-color: #011b34;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: whitesmoke;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  #uploadForm > textarea::-webkit-scrollbar {
+    display: none;
+  
   }
