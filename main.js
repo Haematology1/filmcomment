@@ -84,7 +84,7 @@ function downloadFromGitHub(filePath, fileName) {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-      document.getElementById("status_bar").value = `"${fileName}"downloaded successfully`;
+      document.getElementById("status_bar").value = `"${fileName}" downloaded successfully`;
     } else {
       document.getElementById("status_bar").value = `Error downloading "${fileName}" due to: ${xhr.responseText}`;
     }
