@@ -41,6 +41,7 @@ function uploadToGitHub(filePath, content, fileName) {
 
   xhr.setRequestHeader('Authorization', 'Bearer ghp' + '_' + pa);
   xhr.setRequestHeader('Content-Type', 'application/json');
+  
 
   const data = JSON.stringify({
     message: `Upload ${filePath}`,
