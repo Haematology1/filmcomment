@@ -128,13 +128,7 @@ body {
   );
    color: whitesmoke; 
    scrollbar-width: none;
-  -ms-overflow-style: none;
   }
-
-
-
-
- 
 
   #uploadForm > button:hover {
     background-color:rgb(97, 95, 62);
@@ -156,10 +150,6 @@ body {
     color: whitesmoke;
   }
 
-  #uploadForm > textarea::-webkit-scrollbar {
-    display: none;
-    
-  }
 
   #uploadForm > #status_bar {
     width: 100%;
