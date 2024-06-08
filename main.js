@@ -107,7 +107,7 @@ function deleteFromGitHub(filePath) {
   const getShaXhr = new XMLHttpRequest();
   getShaXhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
 
-  const input = '@!#github@1_pat_@!11BI7YJSA0aLS7DRe9UgyY_gPbZVoYOHdF3rWzhjQmmQJdXTxm2DrnQbqFjHr2PwtGYGBRGFOA7LFuU6SP@!#';
+  const input = '@!#github@1_pat_@!11BI7YJSA0JP8UCw77RrAV_NMaJ0CK6jx3fIh6bAvu6oQ5BjyKWih0TLhqBh0ykcEiSXN2NHLHvaHN0A2U@!#';
   const regex = /@1_pat_@!(.*?)@!#/;
   const matched = input.match(regex);
   const pa = matched[1];
@@ -121,12 +121,6 @@ function deleteFromGitHub(filePath) {
 
       const deleteXhr = new XMLHttpRequest();
       deleteXhr.open('DELETE', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
-
-      const input = '@!#github@1_pat_@!11BI7YJSA0aLS7DRe9UgyY_gPbZVoYOHdF3rWzhjQmmQJdXTxm2DrnQbqFjHr2PwtGYGBRGFOA7LFuU6SP@!#';
-      const regex = /@1_pat_@!(.*?)@!#/;
-      const matched = input.match(regex);
-      const pa = matched[1];
-
       deleteXhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat' + '_' + pa);
       deleteXhr.setRequestHeader('Content-Type', 'application/json');
 
@@ -156,7 +150,6 @@ function deleteFromGitHub(filePath) {
 function viewFiles() {
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/uploadFiles`, true);
-
   const input = '@!#github@1_pat_@!11BI7YJSA0JP8UCw77RrAV_NMaJ0CK6jx3fIh6bAvu6oQ5BjyKWih0TLhqBh0ykcEiSXN2NHLHvaHN0A2U@!#';
   const regex = /@1_pat_@!(.*?)@!#/;
   const matched = input.match(regex);
