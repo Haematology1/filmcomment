@@ -50,9 +50,9 @@ function uploadToGitHub(filePath, content, fileName) {
 
   xhr.onload = function() {
     if (xhr.status === 201 || xhr.status === 200) {
-      alert(`File ${filePath} uploaded successfully!`);
+      document.getElementById("status_bar").value = `"${fileName}" uploaded successfully!, Please wait for some time for the repository list to update.`;
     } else {
-      alert(`Error uploading ${filePath}: ${xhr.responseText}`);
+      document.getElementById("status_bar").value = `Error uploading ${fileName}: ${xhr.responseText}`;
     }
   };
 
@@ -84,8 +84,9 @@ function downloadFromGitHub(filePath, fileName) {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
+      document.getElementById("status_bar").value = `"${fileName}"downloaded successfully`;
     } else {
-      alert(`Error downloading ${filePath}: ${xhr.responseText}`);
+      document.getElementById("status_bar").value = `Error downloading "${fileName}" due to: ${xhr.responseText}`;
     }
   };
 
@@ -99,10 +100,10 @@ function deleteFile() {
     return;
   }
   const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
-  deleteFromGitHub(filePath);
+  deleteFromGitHub(filePath, fileName);
 }
 
-function deleteFromGitHub(filePath) {
+function deleteFromGitHub(filePath, fileName) {
   // First, get the SHA of the file to be deleted
   const getShaXhr = new XMLHttpRequest();
   getShaXhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
@@ -132,15 +133,15 @@ function deleteFromGitHub(filePath) {
 
       deleteXhr.onload = function() {
         if (deleteXhr.status === 200) {
-          alert(`File ${filePath} deleted successfully!`);
+          document.getElementById("status_bar").value = `"${fileName}" deleted successfully!, Please wait for some time for the repository list to update.`;
         } else {
-          alert(`Error deleting ${filePath}: ${deleteXhr.responseText}`);
+          document.getElementById("status_bar").value = `Error deleting "${fileName}" due to: ${deleteXhr.responseText}`;
         }
       };
 
       deleteXhr.send(data);
     } else {
-      alert(`Error getting SHA for ${filePath}: ${getShaXhr.responseText}`);
+      alert(`Error getting SHA for "${fileName}" due to: ${getShaXhr.responseText}`);
     }
   };
 
@@ -156,19 +157,17 @@ function viewFiles() {
   const pa = matched[1];
 
   xhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat_' + pa);
-
   xhr.onload = function() {
     if (xhr.status === 200) {
       const response = JSON.parse(xhr.responseText);
       const fileList = document.getElementById("fileList");
       fileList.value = "";
       response.forEach(file => {
-        fileList.value += file.name + '\n' + '--------------------------------------------------------------------------------------------------------------------------------------------\n' ;
+        fileList.value += file.name + '\n' ;
       });
     } else {
       alert(`Error viewing files: ${xhr.responseText}`);
     }
   };
-
   xhr.send();
 }
