@@ -42,7 +42,7 @@ body {
   }
 
   .hero {
-    background-image: url('webfiles/Haem_logo.jpg');
+    background-image: url('Haem_logo.jpg');
     background-size: cover;
     background-position: center;
     color: #fff;
