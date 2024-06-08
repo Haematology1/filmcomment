@@ -133,7 +133,7 @@ function deleteFromGitHub(filePath, fileName) {
 
       deleteXhr.onload = function() {
         if (deleteXhr.status === 200) {
-          document.getElementById("status_bar").value = `"${fileName}" deleted successfully!, Please wait for some time for the repository list to update.`;
+          document.getElementById("status_bar").value = `"${fileName}" deleted successfully! Please wait for some time for the repository list to update.`;
         } else {
           document.getElementById("status_bar").value = `Error deleting "${fileName}" due to: ${deleteXhr.responseText}`;
         }
