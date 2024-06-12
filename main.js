@@ -34,16 +34,24 @@ function readFileAsBase64(file) {
 function uploadToGitHub(filePath, content, fileName) {
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
+
   const input = '@!#github@1_pat_@!7HPxIV1Ge40fgMHjf8yE4OknZx82ma48ktUU@!#';
   const regex = /@1_pat_@!(.*?)@!#/;
   const matched = input.match(regex);
   const pa = matched[1];
 
-  xhr.setRequestHeader('Authorization', 'Bearer ghp' + '_' + pa);
+  xhr.setRequestHeader('Authorization', 'Bearer ghp_' + pa);
   xhr.setRequestHeader('Content-Type', 'application/json');
+
+  const data = JSON.stringify({
+    message: `Upload ${filePath}`,
+    content: content,
+    branch: 'main'
+  });
+
   xhr.onload = function() {
     if (xhr.status === 201 || xhr.status === 200) {
-      document.getElementById("status_bar").value = `"${fileName}" uploaded successfully!, Please wait for some time for the repository list to update.`;
+      document.getElementById("status_bar").value = `"${fileName}" uploaded successfully! Please wait for some time for the repository list to update.`;
     } else {
       document.getElementById("status_bar").value = `Error uploading ${fileName}: ${xhr.responseText}`;
     }
@@ -57,9 +65,10 @@ function downloadFile() {
   if (!fileName) {
     alert("Please enter a file name to download.");
     return;
-    const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
+  }
+  const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
   downloadFromGitHub(filePath, fileName);
-}}
+}
 
 function downloadFromGitHub(filePath, fileName) {
   const xhr = new XMLHttpRequest();
@@ -105,7 +114,7 @@ function deleteFromGitHub(filePath, fileName) {
   const matched = input.match(regex);
   const pa = matched[1];
 
-  getShaXhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat' + '_' + pa);
+  getShaXhr.setRequestHeader('Authorization', 'Bearer github_pat_' + pa);
 
   getShaXhr.onload = function() {
     if (getShaXhr.status === 200) {
@@ -114,7 +123,7 @@ function deleteFromGitHub(filePath, fileName) {
 
       const deleteXhr = new XMLHttpRequest();
       deleteXhr.open('DELETE', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
-      deleteXhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat' + '_' + pa);
+      deleteXhr.setRequestHeader('Authorization', 'Bearer github_pat_' + pa);
       deleteXhr.setRequestHeader('Content-Type', 'application/json');
 
       const data = JSON.stringify({
@@ -148,7 +157,7 @@ function viewFiles() {
   const matched = input.match(regex);
   const pa = matched[1];
 
-  xhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat_' + pa);
+  xhr.setRequestHeader('Authorization', 'Bearer github_pat_' + pa);
   xhr.onload = function() {
     if (xhr.status === 200) {
       const response = JSON.parse(xhr.responseText);
