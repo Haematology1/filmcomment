@@ -1,40 +1,7 @@
-
 document.getElementById('uploadButton').addEventListener('click', uploadFiles);
 document.getElementById('downloadButton').addEventListener('click', downloadFile);
 document.getElementById('deleteButton').addEventListener('click', deleteFile);
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBsvPCmIwEm0eXtwonDAmoLuvgqZc7G_lU",
-  authDomain: "film-comments-20b3b.firebaseapp.com",
-  projectId: "film-comments-20b3b",
-  storageBucket: "film-comments-20b3b.appspot.com",
-  messagingSenderId: "909788738173",
-  appId: "1:909788738173:web:24cab6efebf856a2e0f714",
-  measurementId: "G-G9H0980711"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-
-function signOut() {
-auth.signOut()
-  .then(() => {
-    window.location.href = 'login.html';  // Redirect to login page
-  })
-  .catch((error) => {
-    alert('Error: ' + error.message);
-  });
-}
-
-// Monitor auth state changes
-auth.onAuthStateChanged((user) => {
-if (!user) {
-  window.location.href = 'login.html';  // Redirect to login page if not authenticated
-}
-});
+document.getElementById('viewFilesButton').addEventListener('click', viewFiles);
 
 function uploadFiles() {
   const fileInput = document.getElementById("fileInput");
@@ -74,14 +41,6 @@ function uploadToGitHub(filePath, content, fileName) {
 
   xhr.setRequestHeader('Authorization', 'Bearer ghp' + '_' + pa);
   xhr.setRequestHeader('Content-Type', 'application/json');
-  
-
-  const data = JSON.stringify({
-    message: `Upload ${filePath}`,
-    content: content,
-    branch: 'main'
-  });
-
   xhr.onload = function() {
     if (xhr.status === 201 || xhr.status === 200) {
       document.getElementById("status_bar").value = `"${fileName}" uploaded successfully!, Please wait for some time for the repository list to update.`;
@@ -98,10 +57,9 @@ function downloadFile() {
   if (!fileName) {
     alert("Please enter a file name to download.");
     return;
-  }
-  const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
+    const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
   downloadFromGitHub(filePath, fileName);
-}
+}}
 
 function downloadFromGitHub(filePath, fileName) {
   const xhr = new XMLHttpRequest();
@@ -205,4 +163,3 @@ function viewFiles() {
   };
   xhr.send();
 }
-
