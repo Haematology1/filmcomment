@@ -1,174 +1,46 @@
-document.getElementById('uploadButton').addEventListener('click', uploadFiles);
-document.getElementById('downloadButton').addEventListener('click', downloadFile);
-document.getElementById('deleteButton').addEventListener('click', deleteFile);
-document.getElementById('viewFilesButton').addEventListener('click', viewFiles);
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+import { getAuth, signOut, setPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-function uploadFiles() {
-  const fileInput = document.getElementById("fileInput");
-  const selectedFiles = fileInput.files;
-  if (selectedFiles.length === 0) {
-    alert("Please select at least one file to upload.");
-    return;
-  } 
-  uploading(selectedFiles);
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBsvPCmIwEm0eXtwonDAmoLuvgqZc7G_lU",
+  authDomain: "film-comments-20b3b.firebaseapp.com",
+  projectId: "film-comments-20b3b",
+  storageBucket: "film-comments-20b3b.appspot.com",
+  messagingSenderId: "909788738173",
+  appId: "1:909788738173:web:24cab6efebf856a2e0f714",
+  measurementId: "G-G9H0980711"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+
+function signOutUser() {
+  signOut(auth)
+    .then(() => {
+      window.location.href = 'login.html';  // Redirect to login page
+    })
+    .catch((error) => {
+      alert('Error: ' + error.message);
+    });
 }
 
-async function uploading(selectedFiles) {
-  for (let file of selectedFiles) {
-    const content = await readFileAsBase64(file);
-    const fileName = file.name;
-    const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
-    uploadToGitHub(filePath, content, fileName);
-  }
-}
-
-function readFileAsBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = error => reject(error);
-    reader.readAsDataURL(file);
-  });
-}
-
-function uploadToGitHub(filePath, content, fileName) {
-  const xhr = new XMLHttpRequest();
-  xhr.open('PUT', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
-  const input = '@!#github@1_pat_@!7HPxIV1Ge40fgMHjf8yE4OknZx82ma48ktUU@!#';
-  const regex = /@1_pat_@!(.*?)@!#/;
-  const matched = input.match(regex);
-  const pa = matched[1];
-
-  xhr.setRequestHeader('Authorization', 'Bearer ghp' + '_' + pa);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  
-
-  const data = JSON.stringify({
-    message: `Upload ${filePath}`,
-    content: content,
-    branch: 'main'
+setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    // New sign-in will be persisted with session persistence.
+    return signInWithEmailAndPassword(auth, email, password);
+  })
+  .catch((error) => {
+    
   });
 
-  xhr.onload = function() {
-    if (xhr.status === 201 || xhr.status === 200) {
-      document.getElementById("status_bar").value = `"${fileName}" uploaded successfully!, Please wait for some time for the repository list to update.`;
-    } else {
-      document.getElementById("status_bar").value = `Error uploading ${fileName}: ${xhr.responseText}`;
-    }
-  };
-
-  xhr.send(data);
-}
-
-function downloadFile() {
-  const fileName = document.getElementById("fileName").value;
-  if (!fileName) {
-    alert("Please enter a file name to download.");
-    return;
+// Monitor auth state changes
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = 'login.html';  // Redirect to login page if not authenticated
   }
-  const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
-  downloadFromGitHub(filePath, fileName);
-}
-
-function downloadFromGitHub(filePath, fileName) {
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', `https://raw.githubusercontent.com/Haematology1/filmcomment/main/${filePath}`, true);
-  xhr.responseType = 'blob';
-
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      const url = window.URL.createObjectURL(xhr.response);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-      document.getElementById("status_bar").value = `"${fileName}" downloaded successfully`;
-    } else {
-      document.getElementById("status_bar").value = `Error downloading "${fileName}" due to: ${xhr.responseText}`;
-    }
-  };
-
-  xhr.send();
-}
-
-function deleteFile() {
-  const fileName = document.getElementById("fileName").value;
-  if (!fileName) {
-    alert("Please enter a file name to delete.");
-    return;
-  }
-  const filePath = 'uploadFiles/' + fileName; // Adjust the path as needed
-  deleteFromGitHub(filePath, fileName);
-}
-
-function deleteFromGitHub(filePath, fileName) {
-  // First, get the SHA of the file to be deleted
-  const getShaXhr = new XMLHttpRequest();
-  getShaXhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
-
-  const input = '@!#github@1_pat_@!11BI7YJSA0JP8UCw77RrAV_NMaJ0CK6jx3fIh6bAvu6oQ5BjyKWih0TLhqBh0ykcEiSXN2NHLHvaHN0A2U@!#';
-  const regex = /@1_pat_@!(.*?)@!#/;
-  const matched = input.match(regex);
-  const pa = matched[1];
-
-  getShaXhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat' + '_' + pa);
-
-  getShaXhr.onload = function() {
-    if (getShaXhr.status === 200) {
-      const response = JSON.parse(getShaXhr.responseText);
-      const sha = response.sha;
-
-      const deleteXhr = new XMLHttpRequest();
-      deleteXhr.open('DELETE', `https://api.github.com/repos/Haematology1/filmcomment/contents/${filePath}`, true);
-      deleteXhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat' + '_' + pa);
-      deleteXhr.setRequestHeader('Content-Type', 'application/json');
-
-      const data = JSON.stringify({
-        message: `Delete ${filePath}`,
-        sha: sha,
-        branch: 'main'
-      });
-
-      deleteXhr.onload = function() {
-        if (deleteXhr.status === 200) {
-          document.getElementById("status_bar").value = `"${fileName}" deleted successfully! Please wait for some time for the repository list to update.`;
-        } else {
-          document.getElementById("status_bar").value = `Error deleting "${fileName}" due to: ${deleteXhr.responseText}`;
-        }
-      };
-
-      deleteXhr.send(data);
-    } else {
-      alert(`Error getting SHA for "${fileName}" due to: ${getShaXhr.responseText}`);
-    }
-  };
-
-  getShaXhr.send();
-}
-
-function viewFiles() {
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', `https://api.github.com/repos/Haematology1/filmcomment/contents/uploadFiles`, true);
-  const input = '@!#github@1_pat_@!11BI7YJSA0JP8UCw77RrAV_NMaJ0CK6jx3fIh6bAvu6oQ5BjyKWih0TLhqBh0ykcEiSXN2NHLHvaHN0A2U@!#';
-  const regex = /@1_pat_@!(.*?)@!#/;
-  const matched = input.match(regex);
-  const pa = matched[1];
-
-  xhr.setRequestHeader('Authorization', 'Bearer github' + '_' + 'pat_' + pa);
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      const response = JSON.parse(xhr.responseText);
-      const fileList = document.getElementById("fileList");
-      fileList.value = "";
-      response.forEach(file => {
-        fileList.value += file.name + '\n' ;
-      });
-    } else {
-      alert(`Error viewing files: ${xhr.responseText}`);
-    }
-  };
-  xhr.send();
-}
+});
