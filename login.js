@@ -21,21 +21,26 @@
  window.signIn = function() {
    const email = document.getElementById('email').value;
    const password = document.getElementById('password').value;
+   const text_display = document.getElementById('login_text')
    signInWithEmailAndPassword(auth, email, password)
      .then((userCredential) => {
        var user = userCredential.user;
      })
      .catch((error) => {
-       alert('Invalid/ Empty Credentials');
+      text_display.style = 'font-size: 1rem; color: red';
+      text_display.innerHTML = "Login Failed! Please verify your login credentials!";
      });
 
-   auth.onAuthStateChanged((user) => {
-     if (user) {
-       var uid = user.uid;
-       text_display.style= "display: block";
-       window.location.href = 'index.html'; 
-     } else {
-       // User is signed out
-     }
-   });
- }
+     auth.onAuthStateChanged((user) => {
+      if (user) {
+        var uid = user.uid;
+        text_display.innerHTML = "Login Successful!";
+        
+        // Pause for 3 seconds (3000 milliseconds) before redirecting
+        setTimeout(
+          window.location.href = 'index.html'
+        , 5000); // 3000 milliseconds = 3 seconds
+      } else {
+        // User is signed out
+      }
+    })}
