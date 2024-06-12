@@ -32,7 +32,7 @@
    auth.onAuthStateChanged((user) => {
      if (user) {
        var uid = user.uid;
-       alert("Account Verified Successfully!");
+       text_display.style= "display: block";
        window.location.href = 'index.html'; 
      } else {
        // User is signed out
