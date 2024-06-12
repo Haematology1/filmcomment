@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Haematology FTS</title>
   <link href='style.css' rel='stylesheet'>
+  <script type="module" src="main.js"> </script>
 </head> 
 <body>
   <nav>
@@ -34,20 +35,19 @@
       <button type="button" id="viewFilesButton">View Files in Repository</button>
       <br>
       <br>
-      <textarea id="fileList" rows="1000" cols="50" readonly></textarea>
+      <textarea id="fileList" rows="10" cols="50" readonly></textarea>
       <br>
       <h3 style="color: green;margin-bottom: 0rem;">Status Bar:</h3>
-      <textarea name="status" id="status_bar" cols="1000" rows="10" readonly></textarea>
+      <textarea name="status" id="status_bar" cols="100" rows="10" readonly></textarea>
     </form>
   </div>
-
+  <button onclick="signOut()">Sign Out</button>
   <footer>
     <div class="container">
       <p>&copy; 2024 Haematology. All rights reserved.</p>
     </div>
   </footer>
 
-  <script src="main.js"></script>
- <script src="app.js"></script>
+  
 </body>
 </html>
